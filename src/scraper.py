@@ -1,7 +1,6 @@
 import asyncio
 import csv
 import logging
-import os
 from datetime import datetime
 from pathlib import Path
 from random import randint
@@ -36,19 +35,17 @@ class Scraper:
         self.__client.load_cookies(cookie_path)
 
     @staticmethod
-    def save_tweets(tweets: List[Tweet]) -> None:
+    def save_tweets(tweets: List[Tweet], csv_path: Path) -> None:
         """
         Save the tweets
         :param tweets: the list of tweets
+        :param csv_path: the csv path
         """
-        csv_path: Path = get_path("./tweets.csv")
-        header = ["Tweet_count", "Username", "Text", "Created At", "Retweets",
-                  "Likes"]
-        file_exists = csv_path.is_file() and os.path.getsize(csv_path) > 0
+        header = ["id", "username", "text", "created_at", "retweets",
+                  "likes"]
         with csv_path.open("w", newline="") as file:
             writer = csv.writer(file)
-            if not file_exists:
-                writer.writerow(header)
+            writer.writerow(header)
             for idx, tweet in enumerate(tweets):
                 writer.writerow([idx, tweet.user.name, tweet.text,
                                  tweet.created_at, tweet.retweet_count,
