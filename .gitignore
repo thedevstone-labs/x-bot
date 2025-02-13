@@ -4,7 +4,8 @@ __pycache__/
 *$py.class
 
 # Configuration
-videos/
+*.csv
+*.~*
 cookies.json
 data.yaml
 config.yaml
