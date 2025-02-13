@@ -1,10 +1,29 @@
 import logging
 import os
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
+from typing import Dict
 
 import yaml
+from pydantic import BaseModel
 
 logger = logging.getLogger(__file__)
+
+
+class Auth(BaseModel):
+    username: str
+    password: str
+    email: str
+
+
+class Scraper(BaseModel):
+    tweet_number: int
+    query: str
+
+
+class AppConfig(BaseModel):
+    auth: Auth
+    scraper: Scraper
 
 
 def load_config():
@@ -12,8 +31,21 @@ def load_config():
     Load the config file
     :return: the config
     """
-    with open("config.yaml", "r") as file:
-        return yaml.safe_load(file)
+    with get_path("config.yaml").open("r") as file:
+        config_data: Dict = yaml.safe_load(file)
+        return AppConfig(**config_data)
+
+
+def get_path(path: str) -> Path:
+    """
+    Get the relative project path to root.
+
+    :param path: the relative path
+    :return: the absolute path
+    """
+    return Path.joinpath(
+        Path(os.path.abspath(__file__)).parent.parent, path
+    )
 
 
 def init_logger() -> None:
@@ -25,7 +57,7 @@ def init_logger() -> None:
     # Set library level
     logging.getLogger("httpx").setLevel(logging.ERROR)
     # Set logger
-    log_name = "logs/app.log"
+    log_name = get_path("logs/app.log")
     file_handler = RotatingFileHandler(
         log_name, mode="w", maxBytes=100000, backupCount=1, encoding="utf-8"
     )
