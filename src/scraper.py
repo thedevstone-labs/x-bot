@@ -75,7 +75,7 @@ class Scraper:
                 else:
                     wait_time = randint(5, 10)
                     logger.info(
-                        f'{datetime.now()} - Getting next {batch_size} tweets after {wait_time} seconds ...')
+                        f'{datetime.now()} - Got {tweet_count} tweets: getting next {batch_size} tweets after {wait_time} seconds ...')
                     await asyncio.sleep(wait_time)
                     tweets_result = await tweets_result.next()
                 # To list
