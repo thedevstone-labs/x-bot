@@ -90,6 +90,9 @@ class Scraper:
                 wait_time = rate_limit_reset - datetime.now()
                 await asyncio.sleep(wait_time.total_seconds())
                 continue
+            except Exception as e:
+                await asyncio.sleep(300)
+                continue
 
             if not tweets:
                 logger.info(f'{datetime.now()} - No more tweets found')
